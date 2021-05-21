@@ -253,7 +253,7 @@ public class GenericApplicationContext extends AbstractApplicationContext implem
 
 	//---------------------------------------------------------------------
 	// Implementations of AbstractApplicationContext's template methods
-	//---------------------------------------------------------------------
+	//---------	------------------------------------------------------------
 
 	/**
 	 * Do nothing: We hold a single internal BeanFactory and rely on callers
@@ -262,6 +262,7 @@ public class GenericApplicationContext extends AbstractApplicationContext implem
 	 */
 	@Override
 	protected final void refreshBeanFactory() throws IllegalStateException {
+		//设置容器状态 
 		if (!this.refreshed.compareAndSet(false, true)) {
 			throw new IllegalStateException(
 					"GenericApplicationContext does not support multiple refresh attempts: just call 'refresh' once");

@@ -92,6 +92,7 @@ public interface FactoryBean<T> {
 	 * @throws Exception in case of creation errors
 	 * @see FactoryBeanNotInitializedException
 	 */
+	//getBean()方法返回的不是FactoryBean本身，而是FactoryBean#getObject()方法所返回的对象，相当于FactoryBean#getObject()代理了getBean()方法
 	@Nullable
 	T getObject() throws Exception;
 
@@ -114,6 +115,7 @@ public interface FactoryBean<T> {
 	 * or {@code null} if not known at the time of the call
 	 * @see ListableBeanFactory#getBeansOfType
 	 */
+	//返回FactoryBean创建的bean类型。
 	@Nullable
 	Class<?> getObjectType();
 

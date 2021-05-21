@@ -414,7 +414,9 @@ public class BeanDefinitionParserDelegate {
 	 */
 	@Nullable
 	public BeanDefinitionHolder parseBeanDefinitionElement(Element ele, @Nullable BeanDefinition containingBean) {
+		//获取id
 		String id = ele.getAttribute(ID_ATTRIBUTE);
+		//获取name
 		String nameAttr = ele.getAttribute(NAME_ATTRIBUTE);
 
 		List<String> aliases = new ArrayList<>();
@@ -435,7 +437,8 @@ public class BeanDefinitionParserDelegate {
 		if (containingBean == null) {
 			checkNameUniqueness(beanName, aliases, ele);
 		}
-
+		//调用重载方法
+		//ML中所有的配置都可以在GenericBeanDefinition的实例类中找到对应的配置
 		AbstractBeanDefinition beanDefinition = parseBeanDefinitionElement(ele, beanName, containingBean);
 		if (beanDefinition != null) {
 			if (!StringUtils.hasText(beanName)) {
@@ -514,14 +517,19 @@ public class BeanDefinitionParserDelegate {
 		}
 
 		try {
+			//创建GenericBeanDefinition类型的实例。
 			AbstractBeanDefinition bd = createBeanDefinition(className, parent);
-
+			//对element所有元素属性进行解析
 			parseBeanDefinitionAttributes(ele, beanName, containingBean, bd);
 			bd.setDescription(DomUtils.getChildElementValueByTagName(ele, DESCRIPTION_ELEMENT));
 
+			//解析子元素meta
 			parseMetaElements(ele, bd);
+			//解析子元素lookup-method 同样，子元素lookup-method似乎并不是很常用，但是在某些时候它的确是非常有用的属性，通常我们称它为获取器注入
 			parseLookupOverrideSubElements(ele, bd.getMethodOverrides());
+			//解析子元素replaced-method 这个方法主要是对bean中replaced-method子元素的提取
 			parseReplacedMethodSubElements(ele, bd.getMethodOverrides());
+
 
 			parseConstructorArgElements(ele, bd);
 			parsePropertyElements(ele, bd);
@@ -558,6 +566,7 @@ public class BeanDefinitionParserDelegate {
 	public AbstractBeanDefinition parseBeanDefinitionAttributes(Element ele, String beanName,
 			@Nullable BeanDefinition containingBean, AbstractBeanDefinition bd) {
 
+		//是否单例
 		if (ele.hasAttribute(SINGLETON_ATTRIBUTE)) {
 			error("Old 1.x 'singleton' attribute in use - upgrade to 'scope' declaration", ele);
 		}
@@ -569,10 +578,12 @@ public class BeanDefinitionParserDelegate {
 			bd.setScope(containingBean.getScope());
 		}
 
+		//是否抽象类
 		if (ele.hasAttribute(ABSTRACT_ATTRIBUTE)) {
 			bd.setAbstract(TRUE_VALUE.equals(ele.getAttribute(ABSTRACT_ATTRIBUTE)));
 		}
 
+		//是否懒加载
 		String lazyInit = ele.getAttribute(LAZY_INIT_ATTRIBUTE);
 		if (isDefaultValue(lazyInit)) {
 			lazyInit = this.defaults.getLazyInit();
