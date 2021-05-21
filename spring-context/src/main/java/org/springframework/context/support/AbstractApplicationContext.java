@@ -515,14 +515,19 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 
 	@Override
 	public void refresh() throws BeansException, IllegalStateException {
+		// 来个锁，不然 refresh() 还没结束，你又来个启动或销毁容器的操作，那不就乱套了嘛
 		synchronized (this.startupShutdownMonitor) {
-			// Prepare this context for refreshing.
+
+			//准备工作，记录下容器的启动时间、标记“已启动”状态、处理配置文件中的占位符
 			prepareRefresh();
 
-			// Tell the subclass to refresh the internal bean factory.
+			// 这步比较关键，这步完成后，配置文件就会解析成一个个 Bean 定义，注册到 BeanFactory 中，
+			// 当然，这里说的 Bean 还没有初始化，只是配置信息都提取出来了，
+			// 注册也只是将这些信息都保存到了注册中心(说到底核心是一个 beanName-> beanDefinition 的 map)
 			ConfigurableListableBeanFactory beanFactory = obtainFreshBeanFactory();
 
-			// Prepare the bean factory for use in this context.
+			// 设置 BeanFactory 的类加载器，添加几个 BeanPostProcessor，手动注册几个特殊的 bean
+			// 这块待会会展开说
 			prepareBeanFactory(beanFactory);
 
 			try {
