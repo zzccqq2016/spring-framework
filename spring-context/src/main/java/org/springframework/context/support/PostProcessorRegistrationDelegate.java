@@ -60,6 +60,7 @@ final class PostProcessorRegistrationDelegate {
 		// 记录执行过后置处理器 beanName
 		Set<String> processedBeans = new HashSet<>();
 
+		//处理传入的beanFactory后置处理器
 		if (beanFactory instanceof BeanDefinitionRegistry) {
 			BeanDefinitionRegistry registry = (BeanDefinitionRegistry) beanFactory;
 			List<BeanFactoryPostProcessor> regularPostProcessors = new ArrayList<>();
