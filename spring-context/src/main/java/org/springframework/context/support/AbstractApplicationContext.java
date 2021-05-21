@@ -557,22 +557,23 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 				// 该方法是注册 Bean 的后置处理器。
 				registerBeanPostProcessors(beanFactory);
 
-				// Initialize message source for this context.
+				//为上下文初始化 Message 源，即对不同语言的消息体进行国际化处理。
 				initMessageSource();
 
-				// Initialize event multicaster for this context.
+				// 初始化事件广播器，并放入 applicationEventMulticaster bean 中
 				initApplicationEventMulticaster();
 
-				// Initialize other special beans in specific context subclasses.
+				// 模板方法，在容器刷新的时候可以自定义逻辑，不同的Spring容器做不同的事情。
 				onRefresh();
 
-				// Check for listener beans and register them.
+				// 注册监听器。
 				registerListeners();
 
-				// Instantiate all remaining (non-lazy-init) singletons.
+				// 实例化所有剩余的非懒加载单例,比如invokeBeanFactoryPostProcessors方法中根据各种注解解析出来的类，
+				// 在这个时候都会被初始化。实例化的过程各种BeanPostProcessor开始起作用。
 				finishBeanFactoryInitialization(beanFactory);
 
-				// Last step: publish corresponding event.
+				// refresh做完之后需要做的其他事情。
 				finishRefresh();
 			} catch (BeansException ex) {
 				if (logger.isWarnEnabled()) {
@@ -852,13 +853,12 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 	 * Doesn't affect other listeners, which can be added without being beans.
 	 */
 	protected void registerListeners() {
-		// Register statically specified listeners first.
+		// 1. 添加指定的监听器
 		for (ApplicationListener<?> listener : getApplicationListeners()) {
 			getApplicationEventMulticaster().addApplicationListener(listener);
 		}
 
-		// Do not initialize FactoryBeans here: We need to leave all regular beans
-		// uninitialized to let post-processors apply to them!
+		// 2. 获取所有实现 ApplicationListener 的广播器,并添加
 		String[] listenerBeanNames = getBeanNamesForType(ApplicationListener.class, true, false);
 		for (String listenerBeanName : listenerBeanNames) {
 			getApplicationEventMulticaster().addApplicationListenerBean(listenerBeanName);
