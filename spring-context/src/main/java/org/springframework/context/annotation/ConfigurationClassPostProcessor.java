@@ -261,7 +261,7 @@ public class ConfigurationClassPostProcessor implements BeanDefinitionRegistryPo
 	}
 
 	/**
-	 * 构建和验证配置模仿在registry中
+	 * 构建和验证配置模式在registry中
 	 * {@link Configuration} classes.
 	 */
 	public void processConfigBeanDefinitions(BeanDefinitionRegistry registry) {
@@ -269,6 +269,7 @@ public class ConfigurationClassPostProcessor implements BeanDefinitionRegistryPo
 		 * Candidates候选人
 		 */
 		List<BeanDefinitionHolder> configCandidates = new ArrayList<>();
+		//获取所有的beanDefinitionName
 		String[] candidateNames = registry.getBeanDefinitionNames();
 
 		for (String beanName : candidateNames) {
